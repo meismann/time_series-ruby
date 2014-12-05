@@ -1,0 +1,7 @@
+/.bundle/
+/Gemfile.lock
+/coverage/
+/spec/reports/
+*.bundle
+*.swo
+*.swp
