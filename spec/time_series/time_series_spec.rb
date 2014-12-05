@@ -19,4 +19,18 @@ describe TimeSeries::TimeSeries do
       expect(subject.map_with(other).weighted_average).to eq 2.2
     end
   end
+
+  describe '#map_with(other1, other2, …)' do
+    let(:data) { [0, 1] }
+    let(:other1) { described_class.new start_time, interval, [2, 3] }
+    let(:other2) { described_class.new start_time, interval, [4, 5] }
+
+    it 'yields with all values at the same index' do
+      expect{ |b| subject.map_with(other1, other2, &b) }.to yield_successive_args(
+        [0, 2, 4],
+        [1, 3, 5]
+      )
+    end
+  end
+
 end
