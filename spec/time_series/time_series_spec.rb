@@ -27,6 +27,13 @@ describe TimeSeries::TimeSeries do
         expect{ subject.map_with(other) }.to raise_error TimeSeries::TimeSeriesCombination::IntervalMismatchError
       end
     end
+
+    context 'on data length mismatch between self and other' do
+      let(:other) { described_class.new start_time, interval, data + [1] }
+      it 'returns a DataLengthMismatchError' do
+        expect{ subject.map_with(other) }.to raise_error TimeSeries::TimeSeriesCombination::DataLengthMismatchError
+      end
+    end
   end
 
   describe '#map_with(other).weighted_average' do
