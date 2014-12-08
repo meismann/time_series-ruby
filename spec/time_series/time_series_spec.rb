@@ -12,6 +12,16 @@ describe TimeSeries::TimeSeries do
 
   its(:sum) { is_expected.to eq 6 }
 
+
+  describe '#map_with(other)' do
+    context 'on start_time mismatch between self and other' do
+      let(:other) { described_class.new start_time + 1, interval, data }
+      it 'returns a CombinationError' do
+        expect{ subject.map_with(other) }.to raise_error TimeSeries::TimeSeriesCombination::StartTimeMismatchError
+      end
+    end
+  end
+
   describe '#map_with(other).weighted_average' do
     let(:other) { described_class.new start_time, interval, [0, 0, 8, 2] }
 
