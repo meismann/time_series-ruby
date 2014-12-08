@@ -26,10 +26,12 @@ module TimeSeries
 
   class TimeSeriesCombination
     class StartTimeMismatchError < StandardError; end
+    class IntervalMismatchError < StandardError; end
 
     def initialize(*time_series)
       @time_series = time_series
       check_start_time_equality!
+      check_interval_equality!
     end
 
     def map
@@ -47,6 +49,11 @@ module TimeSeries
     end
 
   private
+
+    def check_interval_equality!
+      intervals = @time_series.map(&:interval)
+      not intervals.uniq.size == 1 and raise IntervalMismatchError
+    end
 
     def check_start_time_equality!
       start_times = @time_series.lazy.map(&:start_time).map(&:to_time).force

@@ -20,6 +20,13 @@ describe TimeSeries::TimeSeries do
         expect{ subject.map_with(other) }.to raise_error TimeSeries::TimeSeriesCombination::StartTimeMismatchError
       end
     end
+
+    context 'on interval mismatch between self and other' do
+      let(:other) { described_class.new start_time, interval + 1, data }
+      it 'returns a IntervalMismatchError' do
+        expect{ subject.map_with(other) }.to raise_error TimeSeries::TimeSeriesCombination::IntervalMismatchError
+      end
+    end
   end
 
   describe '#map_with(other).weighted_average' do
