@@ -25,6 +25,7 @@ module TimeSeries
   end
 
   class TimeSeriesCombination
+    class MismatchError < StandardError; end
 
     def initialize(*time_series)
       @time_series = time_series
