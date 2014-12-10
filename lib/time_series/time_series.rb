@@ -4,6 +4,15 @@ module TimeSeries
     attr_reader :start_time, :interval, :data
 
     def initialize(start_time, interval, data)
+      if Date === start_time
+        warn Kernel.caller.first + <<-WARNING
+          Do not call #{self.class}.new with a Date, \
+          rather use Time or ActiveSupport::TimeWithZone. \
+          Date #{start_time} gets converted to Time #{start_time.to_time}.
+        WARNING
+        start_time = start_time.to_time
+      end
+
       @start_time, @interval, @data = start_time, interval, data
     end
 
@@ -22,6 +31,11 @@ module TimeSeries
       combination
     end
 
+    def to_time_series_elements_list
+      TimeSeriesElementsList.new data.map.with_index{ |value, index|
+        TimeSeriesElement.new value: value, timestamp: start_time + interval * index
+      }
+    end
   end
 
   class TimeSeriesCombination
