@@ -1,21 +1,32 @@
-Creation:
+A small gem to manipulate timeseries (timestamp-value-pairs). It is rather basic but provides functionality for you to build on top. Feel free to contribute.
 
-t = TimeSeries.new(
-  data, # Array of Numeric
-  start_time,
-  interval
+Creation of a TimeSeries:
+```ruby
+t = TimeSeries::TimeSeries.new(
+  start_time, # Time or ActiveSupport::TimeWithZone
+  interval, # a Numeric that should be understood by Time#+
+  data # Array of Numeric
 )
+```
 
-Manipulation:
+These do what you expect:
 
+```ruby
 t.sum # => sum of all elements
 t.average # => average of all elements
-t.map_with(other_ts).weighted_average # => weighted average, using other_ts as weights
-t.map_with(volume_ts, aht_ts) do |element, volume, aht|
-  ErlangC.new(volume, aht, interval_length, awt).service_level
-end # => new TimeSeries
-t.==(other_ts)
-t.legacy_format # => TimeSeriesElementsList.new …
-t.process! # = TimeSeriesElementsList.process!
+```
 
-delegate :any?, :each, :none?, :size, to: :@data
+You can combine time series with each other to perform additional calculations, like calculating a weighted average…
+```ruby
+t.map_with(other_ts).weighted_average # => weighted average, using other_ts as weights
+```
+… or the population increase/decrease in a city, country etc.:
+```ruby
+population_delta_ts = births_ts.map_with(
+  deaths_ts,
+  immigration_ts,
+  emigration_ts
+) do |births, deaths, immigrants, emigrants|
+  births - deaths + immigrants - emigrants
+end
+```
