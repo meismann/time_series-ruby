@@ -53,14 +53,14 @@ module TimeSeries
     end
 
     def map
-      data_combined = zipDataIterator.map do |values_combined|
+      data_combined = zip_data_iterator.map do |values_combined|
         yield *values_combined
       end
-      newTimeSeries(data_combined)
+      new_time_series(data_combined)
     end
 
     def weighted_average
-      weighted_sum = zipDataIterator.inject(0) do |_weighted_sum, values|
+      weighted_sum = zip_data_iterator.inject(0) do |_weighted_sum, values|
         _weighted_sum += values[0] * values[1]
       end
       weighted_sum.to_f / secondary_ts.first.sum
@@ -83,7 +83,7 @@ module TimeSeries
       not start_times.uniq.size == 1 and raise StartTimeMismatchError
     end
 
-    def newTimeSeries(data)
+    def new_time_series(data)
       TimeSeries.new(primary_ts.start_time, primary_ts.interval, data)
     end
 
@@ -95,7 +95,7 @@ module TimeSeries
       @time_series[1..-1]
     end
 
-    def zipDataIterator
+    def zip_data_iterator
       secondaries_data = secondary_ts.map(&:data)
       primary_ts.data.zip(*secondaries_data)
     end
